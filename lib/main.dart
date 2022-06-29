@@ -2,11 +2,18 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:radish_app/router/locations.dart';
+import 'package:radish_app/screens/auth_screen.dart';
 import 'package:radish_app/screens/splash_screen.dart';
-import 'screens/home_screen.dart';
 
 //비머 전역 선언
 final _routerDelegate = BeamerDelegate(
+  //비머가드
+    guards: [BeamGuard(
+        pathBlueprints: ['/'],
+        check: (context, location) {return true;},
+        showPage: BeamPage(child: AuthScreen())
+    )],
+
     locationBuilder: BeamerLocationBuilder(
         beamLocations: [HomeLocation()]
     )
