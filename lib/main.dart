@@ -10,7 +10,7 @@ final _routerDelegate = BeamerDelegate(
   //비머가드
     guards: [BeamGuard(
         pathBlueprints: ['/'],
-        check: (context, location) {return true;},
+        check: (context, location) {return false;},
         showPage: BeamPage(child: AuthScreen())
     )],
 
@@ -59,6 +59,16 @@ class RadishApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(
+        fontFamily: 'DoHyeon',
+        primarySwatch: Colors.green,
+        textTheme: TextTheme(
+          headline5: TextStyle(
+              fontFamily: 'DoHyeon'),
+          button: TextStyle(
+              color: Colors.white),
+        ),
+      ),
       debugShowCheckedModeBanner: false,  //에뮬레이터 디버그 표시 삭제
       routeInformationParser: BeamerParser(),
       routerDelegate: _routerDelegate,

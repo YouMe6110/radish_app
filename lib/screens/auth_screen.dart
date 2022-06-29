@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:radish_app/screens/start/intro_page.dart';
 
 // 비머가드 false 리턴화면
 class AuthScreen extends StatelessWidget {
@@ -7,8 +8,13 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
-      body: Center(child: Text('로그인을 하십시요.')),
+      backgroundColor: Colors.white,
+      body: PageView(children: [
+        IntroPage(),
+        Container(color: Colors.accents[2],),
+        Container(color: Colors.accents[5],),
+      ],
+      ),
     );
   }
 }
