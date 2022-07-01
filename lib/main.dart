@@ -2,7 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:radish_app/router/locations.dart';
-import 'package:radish_app/screens/auth_screen.dart';
+import 'package:radish_app/screens/start_screen.dart';
 import 'package:radish_app/screens/splash_screen.dart';
 
 //비머 전역 선언
@@ -11,7 +11,7 @@ final _routerDelegate = BeamerDelegate(
     guards: [BeamGuard(
         pathBlueprints: ['/'],
         check: (context, location) {return false;},
-        showPage: BeamPage(child: AuthScreen())
+        showPage: BeamPage(child: StartScreen())
     )],
 
     locationBuilder: BeamerLocationBuilder(
@@ -60,6 +60,7 @@ class RadishApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: ThemeData(
+        hintColor: Colors.grey[350],
         fontFamily: 'DoHyeon',
         primarySwatch: Colors.green,
         textTheme: TextTheme(
@@ -67,6 +68,11 @@ class RadishApp extends StatelessWidget {
               fontFamily: 'DoHyeon'),
           button: TextStyle(
               color: Colors.white),
+        ),
+        appBarTheme: AppBarTheme(
+            backgroundColor: Colors.white,
+            titleTextStyle: TextStyle(color: Colors.black87),
+            elevation: 2
         ),
       ),
       debugShowCheckedModeBanner: false,  //에뮬레이터 디버그 표시 삭제
