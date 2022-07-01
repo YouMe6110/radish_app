@@ -24,3 +24,4 @@ class AuthScreen extends StatelessWidget {
     );
   }
 }
+
