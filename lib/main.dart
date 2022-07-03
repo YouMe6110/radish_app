@@ -1,18 +1,22 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:radish_app/router/locations.dart';
 import 'package:radish_app/screens/start_screen.dart';
 import 'package:radish_app/screens/splash_screen.dart';
+import 'package:radish_app/states/user_provider.dart';
 
 //비머 전역 선언
 final _routerDelegate = BeamerDelegate(
   //비머가드
     guards: [BeamGuard(
         pathBlueprints: ['/'],
-        check: (context, location) {return false;},
-        showPage: BeamPage(child: StartScreen())
-    )],
+        check: (context, location) {
+          return context.watch<UserProvider>().userState;
+        },
+
+        showPage: BeamPage(child: StartScreen()))],
 
     locationBuilder: BeamerLocationBuilder(
         beamLocations: [HomeLocation()]
@@ -58,26 +62,39 @@ class RadishApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: ThemeData(
-        hintColor: Colors.grey[350],
-        fontFamily: 'DoHyeon',
-        primarySwatch: Colors.green,
-        textTheme: TextTheme(
-          headline5: TextStyle(
-              fontFamily: 'DoHyeon'),
-          button: TextStyle(
-              color: Colors.white),
-        ),
-        appBarTheme: AppBarTheme(
+    return ChangeNotifierProvider<UserProvider>(
+      create: (BuildContext context){
+        return UserProvider();
+      },
+      child: MaterialApp.router(
+        theme: ThemeData(
+          hintColor: Colors.grey[350],
+          fontFamily: 'DoHyeon',
+          primarySwatch: Colors.green,
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                primary: Colors.white,
+                minimumSize: Size(48, 48)
+            ),
+          ),
+          textTheme: TextTheme(
+            headline5: TextStyle(
+                fontFamily: 'DoHyeon'),
+            button: TextStyle(
+                color: Colors.white),
+          ),
+          appBarTheme: AppBarTheme(
             backgroundColor: Colors.white,
             titleTextStyle: TextStyle(color: Colors.black87),
-            elevation: 2
+            elevation: 2,
+            actionsIconTheme: IconThemeData(color: Colors.black),
+          ),
         ),
+        debugShowCheckedModeBanner: false,  //에뮬레이터 디버그 표시 삭제
+        routeInformationParser: BeamerParser(),
+        routerDelegate: _routerDelegate,
       ),
-      debugShowCheckedModeBanner: false,  //에뮬레이터 디버그 표시 삭제
-      routeInformationParser: BeamerParser(),
-      routerDelegate: _routerDelegate,
     );
   }
 }
