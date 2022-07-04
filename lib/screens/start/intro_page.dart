@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
@@ -6,20 +7,16 @@ import 'package:radish_app/utils/logger.dart';
 import 'package:provider/provider.dart';
 
 class IntroPage extends StatelessWidget {
-  //페이지컨트롤러 적용
-  PageController controller;
-
-  IntroPage(this.controller, {Key? key}) : super(key: key);
+  IntroPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     logger.d('current user state: ${context.read<UserProvider>().userState}');
     return LayoutBuilder(
-      builder: (context, constraints){
-
+      builder: (context, constraints) {
         Size size = MediaQuery.of(context).size;
 
-        final imgOne = size.width -32;
+        final imgOne = size.width - 32;
         final imgTwo = imgOne * 0.1;
 
         return SafeArea(
@@ -28,7 +25,8 @@ class IntroPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text('무 마켓',
+                Text(
+                  '무 마켓',
                   style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -45,27 +43,31 @@ class IntroPage extends StatelessWidget {
                         height: imgTwo,
                         left: imgOne * 0.45,
                         top: imgOne * 0.45,
-                        child: ExtendedImage.asset('assets/images/intro_two.png'),
+                        child:
+                            ExtendedImage.asset('assets/images/intro_two.png'),
                       ),
                     ],
                   ),
                 ),
-                Text('우리 동네 중고 직거래',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500),
+                Text(
+                  '우리 동네 중고 직거래',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
                 ),
-                Text('무마켓은 동네 직거래 마켓이에요.\n내 동네를 설정하고 시작해보세요!',
+                Text(
+                  '무마켓은 동네 직거래 마켓이에요.\n내 동네를 설정하고 시작해보세요!',
                   style: TextStyle(fontSize: 13),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     TextButton(
-                      onPressed: (){
-                        controller.animateToPage(1, duration: Duration(milliseconds: 700), curve: Curves.easeOut);
+                      onPressed: () async {
+                        context.read<PageController>().animateToPage(1,
+                            duration: Duration(milliseconds: 700),
+                            curve: Curves.easeOut);
                       },
-                      child: Text('내 동네 설정하고 시작하기',
+                      child: Text(
+                        '내 동네 설정하고 시작하기',
                         style: Theme.of(context).textTheme.button,
                       ),
                     ),

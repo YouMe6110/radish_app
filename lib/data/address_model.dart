@@ -6,6 +6,7 @@ class AddressModel {
   Result? _result;
 
   Page? get page => _page;
+
   Result? get result => _result;
 
   AddressModel({Page? page, Result? result}) {
@@ -40,7 +41,9 @@ class Result {
   List<Items>? _items;
 
   String? get crs => _crs;
+
   String? get type => _type;
+
   List<Items>? get items => _items;
 
   Result({String? crs, String? type, List<Items>? items}) {
@@ -81,7 +84,9 @@ class Items {
   Point? _point;
 
   String? get id => _id;
+
   Address? get address => _address;
+
   Point? get point => _point;
 
   Items({String? id, Address? address, Point? point}) {
@@ -93,7 +98,7 @@ class Items {
   Items.fromJson(dynamic json) {
     _id = json['id'];
     _address =
-    json['address'] != null ? Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     _point = json['point'] != null ? Point.fromJson(json['point']) : null;
   }
 
@@ -118,6 +123,7 @@ class Point {
   String? _y;
 
   String? get x => _x;
+
   String? get y => _y;
 
   Point({String? x, String? y}) {
@@ -154,19 +160,24 @@ class Address {
   String? _bldnmdc;
 
   String? get zipcode => _zipcode;
+
   String? get category => _category;
+
   String? get road => _road;
+
   String? get parcel => _parcel;
+
   String? get bldnm => _bldnm;
+
   String? get bldnmdc => _bldnmdc;
 
   Address(
       {String? zipcode,
-        String? category,
-        String? road,
-        String? parcel,
-        String? bldnm,
-        String? bldnmdc}) {
+      String? category,
+      String? road,
+      String? parcel,
+      String? bldnm,
+      String? bldnmdc}) {
     _zipcode = zipcode;
     _category = category;
     _road = road;
@@ -205,7 +216,9 @@ class Page {
   String? _size;
 
   String? get total => _total;
+
   String? get current => _current;
+
   String? get size => _size;
 
   Page({String? total, String? current, String? size}) {

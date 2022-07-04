@@ -13,9 +13,11 @@ class SplashScreen extends StatelessWidget {
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget> [
+          children: <Widget>[
             ExtendedImage.asset('assets/images/radish.png'),
-            CircularProgressIndicator(color: Colors.red,)  //로딩바
+            CircularProgressIndicator(
+              color: Colors.red,
+            ) //로딩바
           ],
         ),
       ),

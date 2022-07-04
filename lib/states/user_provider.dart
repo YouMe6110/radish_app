@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-class UserProvider extends ChangeNotifier{
+class UserProvider extends ChangeNotifier {
   // 유저 로그인 여부 프라이빗 변수 선언
   bool _userLoggedIn = false;
 
@@ -12,5 +12,4 @@ class UserProvider extends ChangeNotifier{
 
   // 변경함수에 연결될 외부변수 선언
   bool get userState => _userLoggedIn;
-
 }
