@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:radish_app/states/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:radish_app/utils/logger.dart';
 
 import 'home/items_page.dart';
 
@@ -22,7 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('삼평동', style: Theme.of(context).appBarTheme.titleTextStyle),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+            },
             icon: Icon(Icons.search),
           ),
           IconButton(
