@@ -1,4 +1,5 @@
 import 'package:beamer/beamer.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,33 +23,39 @@ final _routerDelegate = BeamerDelegate(
 //메인함수 빌드
 void main() {
   Provider.debugCheckInvalidValueType = null;
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
 //마이앱 클래스 선언(정적위젯)
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
     //퓨처 함수로 로딩구현
-    return FutureBuilder<Object>(
-        future: Future.delayed(Duration(seconds: 3), () => 100),
+    return FutureBuilder(
+        future: _initialization,
         builder: (context, snapshot) {
           return AnimatedSwitcher(
-            duration: Duration(milliseconds: 900), //페이드인아웃 효과
-            child: _splashLodingWidget(snapshot), //스냅샷실행 위젯지정
-          );
+              duration: Duration(milliseconds: 300), //페이드인아웃 효과
+              child: _splashLodingWidget(snapshot));
         });
   }
 
-  //스플래쉬로딩위젯 선언(인스턴스)
-  StatelessWidget _splashLodingWidget(AsyncSnapshot<Object> snapshot) {
+  StatelessWidget _splashLodingWidget(AsyncSnapshot<Object?> snapshot) {
     if (snapshot.hasError) {
       print('에러가 발생하였습니다.');
       return Text('Error');
     } //에러발생
-    else if (snapshot.hasData) {
+    else if (snapshot.connectionState == ConnectionState.done) {
       return RadishApp();
     } //정상
     else {
@@ -80,6 +87,8 @@ class RadishApp extends StatelessWidget {
           ),
           textTheme: TextTheme(
             headline5: TextStyle(fontFamily: 'DoHyeon'),
+            subtitle1: TextStyle(fontSize: 17, color: Colors.black87),
+            subtitle2: TextStyle(fontSize: 13, color: Colors.black38),
             button: TextStyle(color: Colors.white),
           ),
           appBarTheme: AppBarTheme(
@@ -91,6 +100,9 @@ class RadishApp extends StatelessWidget {
             elevation: 2,
             actionsIconTheme: IconThemeData(color: Colors.black),
           ),
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+              selectedItemColor: Colors.black87,
+              unselectedItemColor: Colors.black38),
         ),
         debugShowCheckedModeBanner: false, //에뮬레이터 디버그 표시 삭제
         routeInformationParser: BeamerParser(),
