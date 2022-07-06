@@ -1,8 +1,10 @@
+import 'package:beamer/src/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:radish_app/states/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:radish_app/utils/logger.dart';
+import 'package:radish_app/widget/expandablefab.dart';
 
 import 'home/items_page.dart';
 
@@ -51,6 +53,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             color: Colors.accents[15],
+          ),
+        ],
+      ),
+      floatingActionButton: ExpandableFab(
+        distance: 90,
+        children: [
+          MaterialButton(
+            onPressed: () {
+              context.beamToNamed('input');
+            },
+            shape: CircleBorder(),
+            height: 40,
+            color: Theme.of(context).colorScheme.primary,
+            child: Icon(Icons.add),
+          ),
+          MaterialButton(
+            onPressed: () {},
+            shape: CircleBorder(),
+            height: 40,
+            color: Theme.of(context).colorScheme.primary,
+            child: Icon(Icons.add),
           ),
         ],
       ),

@@ -18,7 +18,9 @@ final _routerDelegate = BeamerDelegate(
             return context.watch<UserProvider>().user != null;
           },
           showPage: BeamPage(child: StartScreen()))
-    ], locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()]));
+    ],
+    locationBuilder: BeamerLocationBuilder(
+        beamLocations: [HomeLocation(), InputLocation()]));
 
 //메인함수 빌드
 void main() {
@@ -86,13 +88,17 @@ class RadishApp extends StatelessWidget {
                 minimumSize: Size(48, 48)),
           ),
           textTheme: TextTheme(
-            headline5: TextStyle(fontFamily: 'DoHyeon'),
-            subtitle1: TextStyle(fontSize: 17, color: Colors.black87),
-            subtitle2: TextStyle(fontSize: 13, color: Colors.black38),
-            button: TextStyle(color: Colors.white),
-          ),
+              headline5: TextStyle(fontFamily: 'DoHyeon'),
+              subtitle1: TextStyle(fontSize: 17, color: Colors.black87),
+              subtitle2: TextStyle(fontSize: 13, color: Colors.black38),
+              button: TextStyle(color: Colors.white),
+              bodyText2: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w300)),
           appBarTheme: AppBarTheme(
             backgroundColor: Colors.white,
+            foregroundColor: Colors.black87,
             titleTextStyle: TextStyle(
                 color: Colors.black87,
                 fontSize: 18,
