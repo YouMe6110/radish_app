@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:provider/src/provider.dart';
+import 'package:radish_app/constants/shared_pref_keys.dart';
 import 'package:radish_app/data/address_model.dart';
 import 'package:radish_app/data/address_model2.dart';
 import 'package:radish_app/screens/start/address_service.dart';
@@ -128,9 +129,16 @@ class _AddressPageState extends State<AddressPage> {
 
                     return ListTile(
                       onTap: () {
-                        _saveAddressAndGoToNextPage(_addressModel!
-                                .result!.items![index].address!.road ??
-                            "");
+                        _saveAddressAndGoToNextPage(
+                            _addressModel!
+                                    .result!.items![index].address!.road ??
+                                "",
+                            num.parse(
+                                _addressModel!.result!.items![index].point!.y ??
+                                    "0"),
+                            num.parse(
+                                _addressModel!.result!.items![index].point!.x ??
+                                    "0"));
                       },
                       title: Text(
                           _addressModel!.result!.items![index].address!.road ??
@@ -159,7 +167,13 @@ class _AddressPageState extends State<AddressPage> {
                     return ListTile(
                       onTap: () {
                         _saveAddressAndGoToNextPage(
-                            _addressPointModel[index].result![0].text ?? "");
+                            _addressPointModel[index].result![0].text ?? "",
+                            num.parse(
+                                _addressPointModel[index].input!.point!.y ??
+                                    "0"),
+                            num.parse(
+                                _addressPointModel[index].input!.point!.x ??
+                                    "0"));
                       },
                       title:
                           Text(_addressPointModel[index].result![0].text ?? ""),
@@ -176,19 +190,21 @@ class _AddressPageState extends State<AddressPage> {
     );
   }
 
-  _saveAddressOnSharedPreference(String address) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('address', address);
-  }
-
   //Provider 페이지 이동 및 주소저장 인스턴스
 
-  _saveAddressAndGoToNextPage(String address) async {
-    await _saveAddressOnSharedPreference(address); //주소저장 함수
+  _saveAddressAndGoToNextPage(String address, num lat, num lon) async {
+    await _saveAddressOnSharedPreference(address, lat, lon); //주소저장 함수
     context.read<PageController>().animateToPage(
         //provider 페이지 이동 함수
         2,
         duration: Duration(milliseconds: 700),
         curve: Curves.easeOut);
+  }
+
+  _saveAddressOnSharedPreference(String address, num lat, num lon) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(SHARED_ADDRESS, address);
+    await prefs.setDouble(SHARED_LAT, lat.toDouble());
+    await prefs.setDouble(SHARED_LON, lon.toDouble());
   }
 }
