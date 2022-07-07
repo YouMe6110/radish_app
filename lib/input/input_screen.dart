@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:radish_app/constants/common_size.dart';
-
+import 'package:provider/provider.dart';
+import 'package:radish_app/states/category_notifier.dart';
 import 'multi_image_select.dart';
 
 class InputScreen extends StatefulWidget {
@@ -74,8 +75,11 @@ class _InputScreenState extends State<InputScreen> {
           ),
           _divider,
           ListTile(
+            onTap: () {
+              context.beamToNamed('/input/category_input');
+            },
             dense: true,
-            title: Text('카테고리 선택'),
+            title: Text(context.watch<CategoryNotifier>().currentCategoryInKor),
             trailing: Icon(Icons.navigate_next),
           ),
           _divider,

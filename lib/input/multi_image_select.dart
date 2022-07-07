@@ -1,11 +1,22 @@
+import 'dart:typed_data';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:radish_app/constants/common_size.dart';
 
-class MultiImageSelect extends StatelessWidget {
-  const MultiImageSelect({
+class MultiImageSelect extends StatefulWidget {
+  MultiImageSelect({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<MultiImageSelect> createState() => _MultiImageSelectState();
+}
+
+class _MultiImageSelectState extends State<MultiImageSelect> {
+  List<Uint8List>? _images = [];
+  bool _isPickingImages = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,24 +32,49 @@ class MultiImageSelect extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(common_sm_padding),
-                child: Container(
-                  width: imgSize,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey, width: 2),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.camera_alt_rounded, color: Colors.grey),
-                      Text('0/10',
-                          style: Theme.of(context).textTheme.subtitle2),
-                    ],
+                child: InkWell(
+                  onTap: () async {
+                    _isPickingImages = true;
+
+                    final ImagePicker _picker = ImagePicker();
+                    final List<XFile>? images =
+                        await _picker.pickMultiImage(imageQuality: 10);
+
+                    if (images != null && images.isNotEmpty) {
+                      _images!.clear();
+                      images.forEach((xfile) async {
+                        _images!.add(await xfile.readAsBytes());
+                      });
+
+                      _isPickingImages = false;
+                      setState(() {});
+                    }
+                  },
+                  child: Container(
+                    width: imgSize,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey, width: 2),
+                    ),
+                    child: _isPickingImages
+                        ? Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: CircularProgressIndicator(),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.camera_alt_rounded,
+                                  color: Colors.grey),
+                              Text('0/10',
+                                  style: Theme.of(context).textTheme.subtitle2),
+                            ],
+                          ),
                   ),
                 ),
               ),
               ...List.generate(
-                100,
+                _images!.length,
                 (index) => Stack(
                   children: [
                     Padding(
@@ -46,10 +82,29 @@ class MultiImageSelect extends StatelessWidget {
                           top: common_sm_padding,
                           bottom: common_sm_padding,
                           right: common_sm_padding),
-                      child: ExtendedImage.network(
-                        'https://picsum.photos/200',
+                      child: ExtendedImage.memory(
+                        _images![index],
+                        fit: BoxFit.cover,
+                        height: imgSize,
+                        width: imgSize,
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.circular(16),
+                        loadStateChanged: (state) {
+                          switch (state.extendedImageLoadState) {
+                            case LoadState.loading:
+                              return Container(
+                                  padding: EdgeInsets.all(imgSize / 5),
+                                  height: imgSize,
+                                  width: imgSize,
+                                  child: CircularProgressIndicator());
+
+                            case LoadState.completed:
+                              return null;
+
+                            case LoadState.failed:
+                              return Icon(Icons.cancel);
+                          }
+                        },
                       ),
                     ),
                     Positioned(
@@ -59,7 +114,10 @@ class MultiImageSelect extends StatelessWidget {
                       height: 40,
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () {},
+                        onPressed: () {
+                          _images!.removeAt(index);
+                          setState(() {});
+                        },
                         icon: Icon(Icons.remove_circle,
                             size: 30, color: Colors.red[300]),
                       ),
