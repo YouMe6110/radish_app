@@ -63,44 +63,113 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               _statusBarHeight = MediaQuery.of(context).padding.top;
               return Stack(fit: StackFit.expand, children: [
                 Scaffold(
-                  body: CustomScrollView(
-                    controller: _scrollController,
-                    slivers: [
-                      SliverAppBar(
-                        pinned: true,
-                        expandedHeight: _size!.width,
-                        flexibleSpace: FlexibleSpaceBar(
-                          title: SmoothPageIndicator(
-                              controller: _pageController, // PageController
-                              count: itemModel.imageDownloadUrls.length,
-                              effect: WormEffect(
-                                  activeDotColor:
-                                      Theme.of(context).primaryColor,
-                                  dotColor:
-                                      Theme.of(context).colorScheme.background,
-                                  radius: 2,
-                                  dotHeight: 4,
-                                  dotWidth: 4), // your preferred effect
-                              onDotClicked: (index) {}),
-                          centerTitle: true,
-                          background: PageView.builder(
-                            controller: _pageController,
-                            allowImplicitScrolling: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              return ExtendedImage.network(
-                                itemModel.imageDownloadUrls[index],
-                                fit: BoxFit.cover,
-                                // scale: 0.1,
-                              );
-                            },
-                            itemCount: itemModel.imageDownloadUrls.length,
+                  bottomNavigationBar: Container(
+                    height: 80,
+                    child: Padding(
+                      padding: const EdgeInsets.all(common_sm_padding),
+                      child: SafeArea(
+                        bottom: true,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Colors.grey[300]!),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.favorite_border),
+                                onPressed: () {},
+                              ),
+                              VerticalDivider(
+                                  thickness: 1,
+                                  width: common_sm_padding,
+                                  indent: common_sm_padding,
+                                  endIndent: common_sm_padding),
+                              SizedBox(
+                                width: common_sm_padding,
+                              ),
+                              Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('40,000원',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1),
+                                  Text('가격 제안 불가',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2),
+                                ],
+                              ),
+                              Expanded(child: Container()),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text('채팅으로 거래하기'),
+                              ),
+                            ],
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                  body: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      _imageAppBar(itemModel, context),
                       SliverList(
                         delegate: SliverChildListDelegate(
                           [
                             _userSection(),
+                            Divider(
+                                height: 1,
+                                thickness: 1,
+                                indent: common_bg_padding,
+                                endIndent: common_bg_padding),
+                            Padding(
+                              padding: const EdgeInsets.all(common_bg_padding),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('조단 2 x 나이키, 오프화이트 신발',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6),
+                                  SizedBox(height: common_bg_padding),
+                                  Text(
+                                    '남성패션/잡화ㆍ끌올 15분 전',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2!
+                                        .copyWith(
+                                            decoration:
+                                                TextDecoration.underline),
+                                  ),
+                                  SizedBox(height: common_bg_padding * 2),
+                                  Text(
+                                      '박스도 안 뜯고 시착도 안한 완전 새상품입니다.\n\n사이즈 265이구요 직거래만 합니다.\n\n거래시간은 오후 7시 부터 가능해요~',
+                                      style: TextStyle(
+                                          fontSize: 15, color: Colors.black87)),
+                                  SizedBox(height: common_bg_padding * 2),
+                                  Text('채팅2ㆍ관심8ㆍ조회715'),
+                                ],
+                              ),
+                            ),
+                            Divider(
+                                height: 1,
+                                thickness: 1,
+                                indent: common_bg_padding,
+                                endIndent: common_bg_padding),
+                            MaterialButton(
+                              padding: EdgeInsets.all(common_bg_padding),
+                              onPressed: () {},
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text('이 게시글 신고하기'),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -150,6 +219,38 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         }
         return Container();
       },
+    );
+  }
+
+  SliverAppBar _imageAppBar(ItemModel itemModel, BuildContext context) {
+    return SliverAppBar(
+      pinned: true,
+      expandedHeight: _size!.width,
+      flexibleSpace: FlexibleSpaceBar(
+        title: SmoothPageIndicator(
+            controller: _pageController, // PageController
+            count: itemModel.imageDownloadUrls.length,
+            effect: WormEffect(
+                activeDotColor: Theme.of(context).primaryColor,
+                dotColor: Theme.of(context).colorScheme.background,
+                radius: 2,
+                dotHeight: 4,
+                dotWidth: 4), // your preferred effect
+            onDotClicked: (index) {}),
+        centerTitle: true,
+        background: PageView.builder(
+          controller: _pageController,
+          allowImplicitScrolling: true,
+          itemBuilder: (BuildContext context, int index) {
+            return ExtendedImage.network(
+              itemModel.imageDownloadUrls[index],
+              fit: BoxFit.cover,
+              // scale: 0.1,
+            );
+          },
+          itemCount: itemModel.imageDownloadUrls.length,
+        ),
+      ),
     );
   }
 
