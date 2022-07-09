@@ -2,6 +2,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:radish_app/constants/common_size.dart';
+import 'package:radish_app/data/item_model.dart';
+import 'package:radish_app/repo/item_service.dart';
 import 'package:radish_app/repo/user_service.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -15,22 +17,20 @@ class ItemsPage extends StatelessWidget {
         Size size = MediaQuery.of(context).size;
         final imgSize = size.width / 4;
 
-        return FutureBuilder(
-            future: Future.delayed(
-              Duration(seconds: 2),
-            ),
+        return FutureBuilder<List<ItemModel>>(
+            future: ItemService().getItems(),
             builder: (context, snapshot) {
               return AnimatedSwitcher(
                   duration: Duration(milliseconds: 600),
-                  child: (snapshot.connectionState != ConnectionState.done)
-                      ? _shimmerListView(imgSize)
-                      : _listView(imgSize));
+                  child: (snapshot.hasData && snapshot.data!.isNotEmpty)
+                      ? _listView(imgSize, snapshot.data!)
+                      : _shimmerListView(imgSize));
             });
       },
     );
   }
 
-  ListView _listView(double imgSize) {
+  ListView _listView(double imgSize, List<ItemModel> items) {
     return ListView.separated(
         separatorBuilder: (context, index) {
           return Divider(
@@ -47,10 +47,9 @@ class ItemsPage extends StatelessWidget {
         },
         padding: EdgeInsets.all(common_bg_padding),
         itemBuilder: (context, index) {
+          ItemModel item = items[index];
           return InkWell(
-            onTap: () {
-              UserService().fireStoreReadTest();
-            },
+            onTap: () {},
             child: SizedBox(
               height: imgSize,
               child: Row(
@@ -59,7 +58,8 @@ class ItemsPage extends StatelessWidget {
                     height: imgSize,
                     width: imgSize,
                     child: ExtendedImage.network(
-                      'https://picsum.photos/100',
+                      item.imageDownloadUrls[0],
+                      fit: BoxFit.cover,
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -69,13 +69,13 @@ class ItemsPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('어린이용 범퍼카',
+                        Text(item.title,
                             style: Theme.of(context).textTheme.subtitle1),
                         SizedBox(height: 7),
                         Text('1시간 전',
                             style: Theme.of(context).textTheme.subtitle2),
                         SizedBox(height: 7),
-                        Text('15,000 원'),
+                        Text('${item.price.toString()}원'),
                         Expanded(
                           child: Container(),
                         ),
@@ -113,7 +113,7 @@ class ItemsPage extends StatelessWidget {
             ),
           );
         },
-        itemCount: 50);
+        itemCount: items.length);
   }
 
   Widget _shimmerListView(double imgSize) {

@@ -24,15 +24,15 @@ class InputScreen extends StatefulWidget {
 
 class _InputScreenState extends State<InputScreen> {
   bool _suggestPriceSelected = false;
-  TextEditingController _priceController = TextEditingController();
 
+  TextEditingController _priceController = TextEditingController();
   var _border =
       UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent));
 
   var _divider = Divider(
     height: 1,
-    color: Colors.grey[300],
     thickness: 1,
+    color: Colors.grey[350],
     indent: common_bg_padding,
     endIndent: common_bg_padding,
   );
@@ -80,8 +80,8 @@ class _InputScreenState extends State<InputScreen> {
 
     await ItemService().createNewItem(itemModel.toJson(), itemKey);
 
-    isCreatingItem = false;
-    setState(() {});
+    //업로드 완료 후 자동으로 뒤로가기
+    context.beamBack();
   }
 
   @override
