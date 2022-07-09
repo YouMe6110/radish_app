@@ -5,7 +5,9 @@ import 'package:radish_app/constants/common_size.dart';
 import 'package:radish_app/data/item_model.dart';
 import 'package:radish_app/repo/item_service.dart';
 import 'package:radish_app/repo/user_service.dart';
+import 'package:radish_app/router/locations.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:beamer/beamer.dart';
 
 class ItemsPage extends StatelessWidget {
   const ItemsPage({Key? key}) : super(key: key);
@@ -49,7 +51,9 @@ class ItemsPage extends StatelessWidget {
         itemBuilder: (context, index) {
           ItemModel item = items[index];
           return InkWell(
-            onTap: () {},
+            onTap: () {
+              context.beamToNamed('/$LOCATION_ITEM/:${item.itemKey}');
+            },
             child: SizedBox(
               height: imgSize,
               child: Row(
