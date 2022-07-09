@@ -1,4 +1,5 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:radish_app/constants/common_size.dart';
 import 'package:radish_app/data/item_model.dart';
@@ -96,14 +97,13 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                           ),
                         ),
                       ),
-                      SliverToBoxAdapter(
-                        child: Container(
-                          height: _size!.height * 2,
-                          color: Colors.cyan,
-                          child: Center(
-                              child: Text('item key is${widget.itemKey}')),
+                      SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            _userSection(),
+                          ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -150,6 +150,76 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         }
         return Container();
       },
+    );
+  }
+
+  Widget _userSection() {
+    return Padding(
+      padding: const EdgeInsets.all(common_bg_padding),
+      child: Row(
+        children: [
+          ExtendedImage.network('https://picsum.photos/50',
+              fit: BoxFit.cover,
+              width: _size!.width / 10,
+              height: _size!.height / 20,
+              shape: BoxShape.circle),
+          SizedBox(width: common_sm_padding),
+          SizedBox(
+            height: _size!.height / 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('스토리로더', style: Theme.of(context).textTheme.subtitle1),
+                Text('강남구 논현동', style: Theme.of(context).textTheme.bodyText2)
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        '37.5 ℃',
+                        style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 50,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(1),
+                          child: LinearProgressIndicator(
+                              color: Colors.blueAccent,
+                              value: 0.375,
+                              minHeight: 4,
+                              backgroundColor: Colors.grey[200]),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: common_sm_padding),
+                  Icon(Icons.face, color: Colors.blueAccent),
+                ],
+              ),
+              SizedBox(height: common_sm_padding),
+              Text(
+                '매너온도',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2!
+                    .copyWith(decoration: TextDecoration.underline),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
