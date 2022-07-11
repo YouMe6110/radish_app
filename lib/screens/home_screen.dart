@@ -1,7 +1,8 @@
 import 'package:beamer/src/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:radish_app/states/user_provider.dart';
+import 'package:radish_app/screens/home/map_page.dart';
+import 'package:radish_app/states/user_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:radish_app/utils/logger.dart';
 import 'package:radish_app/widget/expandablefab.dart';
@@ -45,9 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _bottomSelectedIndex,
         children: [
           ItemsPage(),
-          Container(
-            color: Colors.accents[4],
-          ),
+          (context.read<UserNotifier>().userModel == null)
+              ? Container()
+              : MapPage(context.read<UserNotifier>().userModel!),
           Container(
             color: Colors.accents[10],
           ),

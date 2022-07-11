@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:latlng/latlng.dart';
 import 'package:radish_app/constants/data_keys.dart';
 import 'package:radish_app/data/item_model.dart';
 
@@ -68,6 +70,26 @@ class ItemService {
       ItemModel itemModel = ItemModel.fromQuerySnapshot(snapshots.docs[i]);
       if (!(itemKey != null && itemKey == itemModel.itemKey))
         items.add(itemModel);
+    }
+    return items;
+  }
+
+  Future<List<ItemModel>> getNearByItems(String userKey, LatLng latLng) async {
+    final geo = Geoflutterfire();
+    final itemCol = FirebaseFirestore.instance.collection(COL_ITEMS);
+    GeoFirePoint center = GeoFirePoint(latLng.latitude, latLng.longitude);
+    double radius = 10;
+    var field = 'geoFirePoint';
+
+    List<ItemModel> items = [];
+    List<DocumentSnapshot<Map<String, dynamic>>> snapshots = await geo
+        .collection(collectionRef: itemCol)
+        .within(center: center, radius: radius, field: field)
+        .first;
+    for (int i = 0; i < snapshots.length; i++) {
+      ItemModel itemModel = ItemModel.fromSnapshot(snapshots[i]);
+      // todo: remove my own item
+      items.add(itemModel);
     }
     return items;
   }
