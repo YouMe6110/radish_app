@@ -78,7 +78,8 @@ class _InputScreenState extends State<InputScreen> {
 
     logger.d('upload finished - ${downloadUrls.toString()}');
 
-    await ItemService().createNewItem(itemModel.toJson(), itemKey);
+    await ItemService()
+        .createNewItem(itemModel, itemKey, userNotifier.user!.uid);
 
     //업로드 완료 후 자동으로 뒤로가기
     context.beamBack();

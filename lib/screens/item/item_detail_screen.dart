@@ -3,8 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:radish_app/constants/common_size.dart';
 import 'package:radish_app/data/item_model.dart';
+import 'package:radish_app/data/user_model.dart';
 import 'package:radish_app/repo/item_service.dart';
+import 'package:radish_app/screens/item/similar_item.dart';
+import 'package:radish_app/states/category_notifier.dart';
+import 'package:radish_app/states/user_notifier.dart';
+import 'package:radish_app/utils/time_calculation.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:provider/provider.dart';
 
 class ItemDetailScreen extends StatefulWidget {
   final String itemKey;
@@ -56,7 +62,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
       future: ItemService().getItem(widget.itemKey),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          ItemModel itemModel = snapshot.data!;
+          ItemModel itemModel = snapshot.data!; //아이템데이터 받기
+          UserModel userModel =
+              context.read<UserNotifier>().userModel!; //유저데이터 받기
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               _size = MediaQuery.of(context).size;
@@ -94,10 +102,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                     MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('40,000원',
+                                  Text('${itemModel.price}원',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText1),
+                                          .subtitle1),
                                   Text('가격 제안 불가',
                                       style: Theme.of(context)
                                           .textTheme
@@ -122,7 +130,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                       SliverList(
                         delegate: SliverChildListDelegate(
                           [
-                            _userSection(),
+                            _userSection(userModel),
                             Divider(
                                 height: 1,
                                 thickness: 1,
@@ -133,13 +141,13 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('조단 2 x 나이키, 오프화이트 신발',
+                                  Text(itemModel.title,
                                       style: Theme.of(context)
                                           .textTheme
                                           .headline6),
                                   SizedBox(height: common_bg_padding),
                                   Text(
-                                    '남성패션/잡화ㆍ끌올 15분 전',
+                                    '${categoriesMapEngToKor[itemModel.category] ?? "선택"}ㆍ${TimeCalculation.getTimeDiff(itemModel.createdDate)}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyText2!
@@ -148,8 +156,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                                 TextDecoration.underline),
                                   ),
                                   SizedBox(height: common_bg_padding * 2),
-                                  Text(
-                                      '박스도 안 뜯고 시착도 안한 완전 새상품입니다.\n\n사이즈 265이구요 직거래만 합니다.\n\n거래시간은 오후 7시 부터 가능해요~',
+                                  Text(itemModel.detail,
                                       style: TextStyle(
                                           fontSize: 15, color: Colors.black87)),
                                   SizedBox(height: common_bg_padding * 2),
@@ -170,8 +177,66 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                 child: Text('이 게시글 신고하기'),
                               ),
                             ),
+                            Divider(
+                                height: 1,
+                                thickness: 1,
+                                indent: common_bg_padding,
+                                endIndent: common_bg_padding),
+                            Padding(
+                              padding: const EdgeInsets.all(common_bg_padding),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      '${userModel.phoneNumber.substring(9)} 님의 다른 판매상품',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1),
+                                  SizedBox(
+                                    width: 40,
+                                    child: MaterialButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {},
+                                      child: Text('더보기',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: FutureBuilder<List<ItemModel>>(
+                            future: ItemService().getUserItems(
+                                userModel.userKey,
+                                itemKey: itemModel.itemKey),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.all(common_sm_padding),
+                                  child: GridView.count(
+                                    padding: EdgeInsets.zero,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: common_sm_padding,
+                                    crossAxisSpacing: common_sm_padding,
+                                    childAspectRatio: 4 / 5,
+                                    children: List.generate(
+                                        snapshot.data!.length,
+                                        (index) =>
+                                            SimilarItem(snapshot.data![index])),
+                                  ),
+                                );
+                              }
+                              return Container();
+                            }),
                       ),
                     ],
                   ),
@@ -254,7 +319,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     );
   }
 
-  Widget _userSection() {
+  Widget _userSection(UserModel userModel) {
     return Padding(
       padding: const EdgeInsets.all(common_bg_padding),
       child: Row(
@@ -271,8 +336,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('스토리로더', style: Theme.of(context).textTheme.subtitle1),
-                Text('강남구 논현동', style: Theme.of(context).textTheme.bodyText2)
+                Text(userModel.phoneNumber.substring(9),
+                    style: Theme.of(context).textTheme.subtitle1),
+                Text(userModel.address,
+                    style: Theme.of(context).textTheme.bodyText2)
               ],
             ),
           ),
