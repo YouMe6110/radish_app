@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:radish_app/input/category_input_screen.dart';
 import 'package:radish_app/input/input_screen.dart';
+import 'package:radish_app/screens/chat/chatroom_screen.dart';
 import 'package:radish_app/screens/home_screen.dart';
 import 'package:radish_app/screens/item/item_detail_screen.dart';
 import 'package:radish_app/states/category_notifier.dart';
@@ -14,6 +15,7 @@ const LOCATIN_INPUT = 'input';
 const LOCATIN_CATEGORY_INPUT = 'category_input';
 const LOCATION_ITEM = 'item';
 const LOCATION_ITEM_ID = 'item_id';
+const LOCATION_CHATROOM_ID = 'chatroom_id';
 
 class HomeLocation extends BeamLocation {
   @override
@@ -64,9 +66,15 @@ class ItemLocation extends BeamLocation {
             key: ValueKey(LOCATION_ITEM_ID),
             child:
                 ItemDetailScreen(state.pathParameters[LOCATION_ITEM_ID] ?? "")),
+      if (state.pathParameters.containsKey(LOCATION_CHATROOM_ID))
+        BeamPage(
+            key: ValueKey(LOCATION_CHATROOM_ID),
+            child: ChatroomScreen(
+                chatroomKey: state.pathParameters[LOCATION_CHATROOM_ID] ?? "")),
     ];
   }
 
   @override
-  List get pathBlueprints => ['/$LOCATION_ITEM/:$LOCATION_ITEM_ID'];
+  List get pathBlueprints =>
+      ['/$LOCATION_ITEM/:$LOCATION_ITEM_ID/:$LOCATION_CHATROOM_ID'];
 }
